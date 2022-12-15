@@ -1,0 +1,6 @@
+## Title: Disenchant Tracker
+## Interface: 100002
+## Dependencies: Events, Coroutine
+## SavedVariables: disenchantYield
+
+DisenchantTracker.lua
