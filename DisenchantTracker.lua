@@ -8,8 +8,8 @@ end
 
 local DISENCHANT_SPELL_ID = 13262
 
-function _.onUnitSpellcastSucceeded(__, ___, spellID)
-  if spellID == DISENCHANT_SPELL_ID then
+function _.onUnitSpellcastSucceeded(unit, ___, spellID)
+  if spellID == DISENCHANT_SPELL_ID and unit == 'player' then
     Coroutine.runAsCoroutine(_.onDisenchanted)
   end
 end
