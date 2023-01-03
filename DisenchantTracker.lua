@@ -37,11 +37,11 @@ function _.onDisenchanted()
         yield = yield
       }
 
-      if not disenchantYield then
-        disenchantYield = {}
+      if not prospectYield then
+        prospectYield = {}
       end
 
-      table.insert(disenchantYield, _.compress(event))
+      table.insert(prospectYield, _.compress(event))
     end
   end
 end
