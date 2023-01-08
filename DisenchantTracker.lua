@@ -10,14 +10,14 @@ local DISENCHANT_SPELL_ID = 13262
 
 function _.onUnitSpellcastSucceeded(unit, ___, spellID)
   if spellID == DISENCHANT_SPELL_ID and unit == 'player' then
-    Coroutine.runAsCoroutine(_.onDisenchanted)
+    Coroutine.runAsCoroutineImmediately(_.onDisenchanted)
   end
 end
 
 function _.onDisenchanted()
   local wasSuccessful, event, containerIndex, slotIndex = Events.waitForEvent('ITEM_LOCKED')
   if wasSuccessful then
-    local disenchantedItemID = C_Container.GetContainerItemID(containerIndex, slotIndex)
+    local disenchantedItemLink = C_Container.GetContainerItemLink(containerIndex, slotIndex)
     local wasSuccessful2 = Events.waitForEvent('LOOT_READY')
     if wasSuccessful2 then
       local yield = {}
@@ -33,22 +33,23 @@ function _.onDisenchanted()
       end
 
       local event = {
-        disenchantedItemID = disenchantedItemID,
+        disenchantedItemLink = disenchantedItemLink,
         yield = yield
       }
 
-      if not prospectYield then
-        prospectYield = {}
+      if not disenchantYield then
+        disenchantYield = {}
       end
 
-      table.insert(prospectYield, _.compress(event))
+      table.insert(disenchantYield, _.compress(event))
+      print('added disenchant event')
     end
   end
 end
 
 function _.compress(event)
   local compressedEvent = {
-    event.disenchantedItemID
+    event.disenchantedItemLink
   }
   for __, yieldEntry in ipairs(event.yield) do
     table.insert(compressedEvent, yieldEntry.itemID)
