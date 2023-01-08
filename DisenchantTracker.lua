@@ -42,7 +42,6 @@ function _.onDisenchanted()
       end
 
       table.insert(disenchantYield, _.compress(event))
-      print('added disenchant event')
     end
   end
 end
