@@ -1,0 +1,6 @@
+## Title: Tracker
+## Interface: 100002
+## Dependencies: Events, Coroutine, Set
+## SavedVariables: disenchantYield, miningYield, herbalismYield
+
+Tracker.lua
