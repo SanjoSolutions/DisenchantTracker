@@ -211,9 +211,6 @@ TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(too
   if tooltip == GameTooltip then
     TooltipUtil.SurfaceArgs(data)
     local spellID = data.id
-    if IsShiftKeyDown() then
-      CopyToClipboard(spellID)
-    end
     if spellIDs:contains(spellID) then
       local name = GetSpellInfo(spellID)
       local eventsSource
