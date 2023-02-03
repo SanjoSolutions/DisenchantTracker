@@ -207,55 +207,56 @@ local miningSpellIDs = Set.create({
 
 local spellIDs = Set.union(herbalismSpellIDs, miningSpellIDs)
 
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip, data)
-  if tooltip == GameTooltip then
-    TooltipUtil.SurfaceArgs(data)
-    local spellID = data.id
-    if spellIDs:contains(spellID) then
-      local name = GetSpellInfo(spellID)
-      local eventsSource
-      if herbalismSpellIDs:contains(spellID) then
-        eventsSource = herbalismYield
-      elseif miningSpellIDs:contains(spellID) then
-        eventsSource = miningYield
-      end
-      local events = Array.filter(eventsSource or {}, function(event)
-        return event[1] == name
-      end)
-      local counts = {}
-      Array.forEach(events, function(event)
-        for index = 2, #event, 2 do
-          local id = event[index]
-          local count = event[index + 1] or 0
-          if not counts[id] then
-            counts[id] = 0
+if _G.TSM_API then
+  TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip, data)
+    if tooltip == GameTooltip then
+      TooltipUtil.SurfaceArgs(data)
+      local spellID = data.id
+      if spellIDs:contains(spellID) then
+        local name = GetSpellInfo(spellID)
+        local eventsSource
+        if herbalismSpellIDs:contains(spellID) then
+          eventsSource = herbalismYield
+        elseif miningSpellIDs:contains(spellID) then
+          eventsSource = miningYield
+        end
+        local events = Array.filter(eventsSource or {}, function(event)
+          return event[1] == name
+        end)
+        local counts = {}
+        Array.forEach(events, function(event)
+          for index = 2, #event, 2 do
+            local id = event[index]
+            local count = event[index + 1] or 0
+            if not counts[id] then
+              counts[id] = 0
+            end
+            counts[id] = counts[id] + count
           end
-          counts[id] = counts[id] + count
+        end)
+        local rates = {}
+        local numberOfEvents = #events
+        local text
+        if numberOfEvents >= 1 then
+          for id, count in pairs(counts) do
+            local rate = {
+              id = id,
+              rate = count / numberOfEvents
+            }
+            table.insert(rates, rate)
+          end
+          local averageGold = Array.reduce(rates, function(averageGold, rate)
+            return averageGold + rate.rate * (_.retrieveMarketPrice(rate.id) or 0)
+          end, 0)
+          text = GetMoneyString(averageGold)
+        else
+          text = 'No data available'
         end
-      end)
-      local rates = {}
-      local numberOfEvents = #events
-      local text
-      if numberOfEvents >= 1 then
-        for id, count in pairs(counts) do
-          local rate = {
-            id = id,
-            rate = count / numberOfEvents
-          }
-          table.insert(rates, rate)
-        end
-        local averageGold = Array.reduce(rates, function(averageGold, rate)
-          return averageGold + rate.rate * (_.retrieveMarketPrice(rate.id) or 0)
-        end, 0)
-        text = GetMoneyString(averageGold)
-      else
-        text = 'No data available'
+        tooltip:AddDoubleLine('Average gold:', text, nil, nil, nil, 1, 1, 1)
       end
-      tooltip:AddLine('')
-      tooltip:AddDoubleLine('Average gold:', text, nil, nil, nil, 1, 1, 1)
     end
-  end
-end)
+  end)
+end
 
 function _.retrieveMarketPrice(itemID)
   return TSM_API.GetCustomPriceValue('dbmarket', 'i:' .. itemID)

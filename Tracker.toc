@@ -1,6 +1,7 @@
 ## Title: Tracker
 ## Interface: 100002
 ## Dependencies: Events, Coroutine, Set
+## OptionalDeps: TradeSkillMaster
 ## SavedVariables: disenchantYield, miningYield, herbalismYield
 
 Tracker.lua
