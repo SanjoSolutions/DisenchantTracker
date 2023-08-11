@@ -55,9 +55,7 @@ function _.onHerbGathered(nodeName)
 end
 
 function _.onGathered(nodeName, yieldName)
-	print('before LOOT_READY')
   local wasSuccessful2 = Events.waitForEvent('LOOT_READY', 1)
-  print('after LOOT_READY')
 
   local yield = {}
 
