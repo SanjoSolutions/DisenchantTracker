@@ -1,6 +1,6 @@
 local _ = {}
 
-local Set = Library.retrieve('Set', '^1.0.0')
+local Set = Library.retrieve('Set', '^1.1.0')
 
 local function onEvent(self, event, ...)
   if event == 'UNIT_SPELLCAST_SENT' then
